@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { theme } from "../theme";
 import Console from "../components/Console";
+import ScoresTable from "../components/ScoresTable";
 import { lightGamePad } from "../utils/lightGamePad";
 import {
   setPlayer,
@@ -38,12 +39,6 @@ const Main = (props: any) => {
   const toggleTurns = () => {
     if (simonTurn) {
       removeClassOff();
-      setMessage(true);
-      setTimeout(
-        () => setMessage(false),
-        props.sequence.length * theme.simonLightSpan + 2000
-      );
-
       setSimonTurn(false);
       setPlayerTurn(true);
     }
@@ -69,54 +64,112 @@ const Main = (props: any) => {
     }
   };
 
-  const playGame = () => {
-    if (props.sequence.length === 1) {
-      // const newSequence = [props.sequence[0], props.sequence[0]];
-      props.setSequence(props.sequence[0]);
-      lightGamePad([props.sequence[0], props.sequence[0]]);
-      toggleTurns();
-    } else {
-      const move = getRandomIntInclusive();
-      // props.sequence.push(move);
-
-      props.setSequence(move);
-      // lightGamePad(newSequence);
-      // console.log("My newSequence:", props.sequence);
-      lightGamePad(props.sequence);
-      toggleTurns();
-    }
+  const handleEndGame = () => {
+    setMessage(false);
+    setSimonTurn(true);
+    setPlayerTurn(false);
+    props.resetGame();
   };
+
+  const playGame = () => {
+    // const els = document.querySelectorAll(".off");
+    // setElements(els);
+
+    switch (true) {
+      case simonTurn && props.sequence.length === 0:
+        console.log("Let's play!!");
+
+        const move = getRandomIntInclusive();
+        props.setSequence(move);
+        setMessage(true);
+        lightGamePad();
+        setTimeout(() => {
+          setMessage(false);
+          toggleTurns();
+        }, props.sequence.length * theme.simonLightSpan + 2000);
+        // one function can do all of the above, just send the move number
+        break;
+      case simonTurn && props.sequence.length === 1:
+        props.setSequence(props.sequence[0]);
+        setMessage(true);
+        lightGamePad();
+        setTimeout(() => {
+          setMessage(false);
+          toggleTurns();
+        }, props.sequence.length * theme.simonLightSpan + 2000);
+        break;
+      case simonTurn && props.sequence.length > 1:
+        const nextMove = getRandomIntInclusive();
+        props.setSequence(nextMove);
+        setMessage(true);
+        lightGamePad();
+        setTimeout(() => {
+          setMessage(false);
+          toggleTurns();
+        }, props.sequence.length * theme.simonLightSpan + 2000);
+        break;
+      default:
+        console.log("props.sequence.length = ", props.sequence.length);
+    }
+    // if (props.sequence.length === 1) {
+    //   // const newSequence = [props.sequence[0], props.sequence[0]];
+    //   props.setSequence(props.sequence[0]);
+    //   lightGamePad([props.sequence[0], props.sequence[0]]);
+    //   toggleTurns();
+    // } else {
+    //   const move = getRandomIntInclusive();
+    //   // props.sequence.push(move);
+
+    //   props.setSequence(move);
+    //   // lightGamePad(newSequence);
+    //   // console.log("My newSequence:", props.sequence);
+    //   lightGamePad(props.sequence);
+    //   toggleTurns();
+    // }
+  };
+
+  // useEffect(() => {
+  //   if (gameOn && props.sequence.length === 0) {
+  //     const move = getRandomIntInclusive();
+  //     // const randomInt = getRandomIntInclusive();
+  //     // const newSequence = [randomInt];
+  //     props.setSequence(move);
+  //     lightGamePad([move]);
+  //     // lightGamePad(newSequence);
+  //     toggleTurns();
+  //   }
+  //   if (!gameOn && props.sequence.length > 0) {
+  //     props.resetGame();
+  //   }
+  // }, [gameOn]);
+
+  // useEffect(() => {
+  //   if (simonTurn && props.sequence.length > 0) {
+  //     playGame();
+  //   }
+  // }, [simonTurn]);
 
   useEffect(() => {
     const els = document.querySelectorAll(".off");
     setElements(els);
 
-    if (gameOn && props.sequence.length === 0) {
-      const move = getRandomIntInclusive();
-      // const randomInt = getRandomIntInclusive();
-      // const newSequence = [randomInt];
-      props.setSequence(move);
-      lightGamePad([move]);
-      // lightGamePad(newSequence);
-      toggleTurns();
-    }
-    if (!gameOn && props.sequence.length > 0) {
-      props.resetGame();
-    }
-  }, [gameOn]);
-
-  useEffect(() => {
-    if (simonTurn && props.sequence.length > 0) {
+    if (gameOn) {
       playGame();
+    } else if (!gameOn && props.sequence.length > 0) {
+      // props.resetGame();
+      setMessage(true);
     }
-  }, [simonTurn]);
+  }, [gameOn, playerTurn]);
   // console.log("Game props:", props);
-  console.log("is play:", gameOn);
+  // console.log("is play:", gameOn);
   // console.log("is next:", next);
-  console.log("is playerTurn:", playerTurn);
-  console.log("is simonTurn:", simonTurn);
+  // console.log("is playerTurn:", playerTurn);
+  // console.log("is simonTurn:", simonTurn);
+  // console.log("els:", elements);
+  // console.log("isMessage:", isMessage);
   const divStyle = gameOn ? { backgroundColor: "lightgrey" } : {};
   const isVisible = isMessage ? "visible" : "hidden";
+
   return (
     // Add messages to the game and activate next sequence
     // only after message is off.
@@ -131,12 +184,15 @@ const Main = (props: any) => {
       </Board>
       <PlayZone>
         <MessageBox style={{ visibility: isVisible }}>
-          {/* {getMessage().text} */}
-          {simonTurn && gameOn && <h3>watch</h3>}
+          {getMessage().text}
+          {!gameOn && props.sequence.length > 0 && (
+            <button onClick={() => handleEndGame()}>Start Over</button>
+          )}
+          {/* {simonTurn && gameOn && <h3>watch</h3>} */}
         </MessageBox>
         <Console toggleTurns={toggleTurns} setGameOn={setGameOn} />
-      </PlayZone>{" "}
-      {/* <ScoresTable /> */}
+      </PlayZone>
+      <ScoresTable />
     </MainContainer>
   );
 };
@@ -174,7 +230,6 @@ const mapStateToProps = (state: any) => {
     player: state.appStore.player,
     gameScore: state.appStore.gameScore,
     bestScores: state.appStore.bestScores,
-    gamePads: state.appStore.gamePads,
     sequence: state.appStore.sequence,
   };
 };

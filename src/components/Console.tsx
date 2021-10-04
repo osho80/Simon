@@ -9,7 +9,7 @@ import {
   setSequence,
   resetGame,
 } from "../store/actions";
-
+import { updateBestScores } from "../utils/updateBestScores";
 import { setCookie } from "../services/cookieService";
 
 const Console = (props: any) => {
@@ -26,12 +26,14 @@ const Console = (props: any) => {
     if (value === props.sequence[numOfMove]) {
       // console.log("Yipi Kay yei!!!");
       if (numOfMove === props.sequence.length - 1) {
-        // console.log("Equal!!!", numOfMove, props.sequence.length - 1);
+        console.log("Equal!!!", numOfMove, props.sequence.length - 1);
 
         props.setScore();
         props.toggleTurns();
         setNumOfMove(0);
       } else {
+        console.log("Strange!!!", numOfMove, props.sequence.length - 1);
+
         setNumOfMove(numOfMove + 1);
       }
     } else {
@@ -41,12 +43,15 @@ const Console = (props: any) => {
         "value:",
         value
       );
+      updateBestScores();
       props.setGameOn(false);
+      setNumOfMove(0);
       console.log("You lose !!!");
       // App breaks after second round - why????
     }
   };
   // console.log("My Console props", props);
+  console.log("My numOfMove", numOfMove);
   return (
     <GameConsole>
       <TopLeft
@@ -177,6 +182,8 @@ const ConsoleCenter = styled.div`
 const mapStateToProps = (state: any) => {
   return {
     sequence: state.appStore.sequence,
+    gameScore: state.appStore.gameScore,
+    bestScores: state.appStore.bestScores,
   };
 };
 

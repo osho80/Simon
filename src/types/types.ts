@@ -14,7 +14,6 @@ type score = {
 export interface AppState {
   player: string;
   gameScore: number;
-  bestScores: score | score[];
-  gamePads: NodeListOf<Element>;
+  bestScores: [] | score[];
   sequence: number[];
 }

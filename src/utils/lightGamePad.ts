@@ -1,10 +1,14 @@
 import { theme } from "../theme";
+import { store } from "../store/store";
 const light = "light";
 
-export const lightGamePad = (moves: number[]) => {
-  console.log("My lightGamePad moves", moves);
+export const lightGamePad = () => {
+  // console.log("My lightGamePad moves", moves);
+  const state = store.getState();
+  const sequence = state.appStore.sequence;
+  // console.log("My lightGamePad state", state.appStore.sequence);
 
-  moves.forEach((move, idx) => {
+  sequence.forEach((move, idx) => {
     const el = document.getElementById(`${move}`);
     if (el) {
       setTimeout(() => el.classList.add(light), idx * theme.simonLightSpan);
@@ -16,6 +20,7 @@ export const lightGamePad = (moves: number[]) => {
   });
 };
 
+// Perhas use the store instead....
 // Handle here as well the toggle of .off
 // LAST LIGHT IS NOT VISIBLE!!!!!!!!!
 

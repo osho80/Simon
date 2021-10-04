@@ -12,7 +12,6 @@ const initialState: AppState = {
   player: currPlayer,
   gameScore: 0,
   bestScores: bestScores,
-  gamePads: document.querySelectorAll(".off"),
   sequence: [],
 };
 

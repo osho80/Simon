@@ -11,6 +11,7 @@ export const setScore = (score) => {
 };
 
 export const setBests = (bests) => {
+  console.log("My setBests", bests);
   return (dispatch) => {
     dispatch(_setBests(bests));
   };
@@ -34,8 +35,8 @@ const _setScore = (score) => {
   return { type: "SET_SCORE", score };
 };
 
-const _setBests = (scores) => {
-  return { type: "SET_BESTS", scores };
+const _setBests = (bests) => {
+  return { type: "SET_BESTS", bests };
 };
 
 const _setSequence = (move) => {
