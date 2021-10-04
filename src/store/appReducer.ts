@@ -10,9 +10,10 @@ const currSequence = simonSequence ? JSON.parse(simonSequence) : [];
 
 const initialState: AppState = {
   player: currPlayer,
-  gameScore: currScore,
+  gameScore: 0,
   bestScores: bestScores,
-  sequence: currSequence,
+  gamePads: document.querySelectorAll(".off"),
+  sequence: [],
 };
 
 const appReducer = (state = initialState, action: any) => {
@@ -20,12 +21,14 @@ const appReducer = (state = initialState, action: any) => {
     case "SET_PLAYER":
       return { ...state, player: action.player };
     case "SET_SCORE":
-      return { ...state, gameScore: action.score };
+      // return { ...state, gameScore: action.score };
+      return { ...state, gameScore: state.gameScore + 1 };
     case "SET_BESTS":
       return { ...state, bestScores: action.bests };
     case "SET_SEQUENCE":
       return { ...state, sequence: [...state.sequence, action.move] };
-
+    case "RESET_GAME":
+      return initialState;
     default:
       return state;
   }

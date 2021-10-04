@@ -21,7 +21,11 @@ export const setSequence = (move) => {
     dispatch(_setSequence(move));
   };
 };
-
+export const resetGame = () => {
+  return (dispatch) => {
+    dispatch(_resetGame());
+  };
+};
 const _setPlayer = (player) => {
   return { type: "SET_PLAYER", player };
 };
@@ -36,4 +40,8 @@ const _setBests = (scores) => {
 
 const _setSequence = (move) => {
   return { type: "SET_SEQUENCE", move };
+};
+
+const _resetGame = () => {
+  return { type: "RESET_GAME" };
 };

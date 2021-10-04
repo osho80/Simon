@@ -15,5 +15,6 @@ export interface AppState {
   player: string;
   gameScore: number;
   bestScores: score | score[];
+  gamePads: NodeListOf<Element>;
   sequence: number[];
 }
