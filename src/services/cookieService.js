@@ -7,7 +7,8 @@ export const setCookie = (cName, cValue, expDays) => {
 
 export const getCookieValues = () => {
   const cDecoded = decodeURIComponent(document.cookie);
-  const { simonPlayer, simonScore, simonBests, simonSequence } =
-    Object.fromEntries(cDecoded.split("; ").map((val) => val.split("=")));
-  return { simonPlayer, simonScore, simonBests, simonSequence };
+  const { simonPlayer, simonBests } = Object.fromEntries(
+    cDecoded.split("; ").map((val) => val.split("="))
+  );
+  return { simonPlayer, simonBests };
 };

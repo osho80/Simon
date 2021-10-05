@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 
@@ -8,6 +8,8 @@ type Score = {
 };
 
 const ScoresTable = (props: any) => {
+  useEffect(() => {}, [props.score]);
+
   return (
     <TableContainer>
       <BestScores>
@@ -49,6 +51,7 @@ const Body = styled.td`
 const mapStateToProps = (state: any) => {
   return {
     bestScores: state.appStore.bestScores,
+    score: state.appStore.gameScore,
   };
 };
 

@@ -5,22 +5,14 @@ import { theme } from "../theme";
 import Console from "../components/Console";
 import ScoresTable from "../components/ScoresTable";
 import { lightGamePad } from "../utils/lightGamePad";
-import {
-  setPlayer,
-  setScore,
-  setBests,
-  setSequence,
-  resetGame,
-} from "../store/actions";
+import { setPlayer, setSequence, resetGame } from "../store/actions";
 
 import { getRandomIntInclusive } from "../utils/getRandomInt";
 
 const Main = (props: any) => {
   const [gameOn, setGameOn] = useState(false);
-  // const [next, setNext] = useState(false);
   const [playerTurn, setPlayerTurn] = useState(false);
   const [simonTurn, setSimonTurn] = useState(true);
-  // const [sequence, setSequence] = useState<number[]>([]);
   const [elements, setElements] = useState<[] | NodeListOf<Element>>([]);
   const [isMessage, setMessage] = useState(false);
 
@@ -72,9 +64,6 @@ const Main = (props: any) => {
   };
 
   const playGame = () => {
-    // const els = document.querySelectorAll(".off");
-    // setElements(els);
-
     switch (true) {
       case simonTurn && props.sequence.length === 0:
         console.log("Let's play!!");
@@ -111,43 +100,7 @@ const Main = (props: any) => {
       default:
         console.log("props.sequence.length = ", props.sequence.length);
     }
-    // if (props.sequence.length === 1) {
-    //   // const newSequence = [props.sequence[0], props.sequence[0]];
-    //   props.setSequence(props.sequence[0]);
-    //   lightGamePad([props.sequence[0], props.sequence[0]]);
-    //   toggleTurns();
-    // } else {
-    //   const move = getRandomIntInclusive();
-    //   // props.sequence.push(move);
-
-    //   props.setSequence(move);
-    //   // lightGamePad(newSequence);
-    //   // console.log("My newSequence:", props.sequence);
-    //   lightGamePad(props.sequence);
-    //   toggleTurns();
-    // }
   };
-
-  // useEffect(() => {
-  //   if (gameOn && props.sequence.length === 0) {
-  //     const move = getRandomIntInclusive();
-  //     // const randomInt = getRandomIntInclusive();
-  //     // const newSequence = [randomInt];
-  //     props.setSequence(move);
-  //     lightGamePad([move]);
-  //     // lightGamePad(newSequence);
-  //     toggleTurns();
-  //   }
-  //   if (!gameOn && props.sequence.length > 0) {
-  //     props.resetGame();
-  //   }
-  // }, [gameOn]);
-
-  // useEffect(() => {
-  //   if (simonTurn && props.sequence.length > 0) {
-  //     playGame();
-  //   }
-  // }, [simonTurn]);
 
   useEffect(() => {
     const els = document.querySelectorAll(".off");
@@ -156,43 +109,41 @@ const Main = (props: any) => {
     if (gameOn) {
       playGame();
     } else if (!gameOn && props.sequence.length > 0) {
-      // props.resetGame();
       setMessage(true);
     }
   }, [gameOn, playerTurn]);
-  // console.log("Game props:", props);
-  // console.log("is play:", gameOn);
-  // console.log("is next:", next);
-  // console.log("is playerTurn:", playerTurn);
-  // console.log("is simonTurn:", simonTurn);
-  // console.log("els:", elements);
-  // console.log("isMessage:", isMessage);
+
+  useEffect(() => {
+    console.log("Best Scores Updated - useEffect:", props.bestScores);
+  }, [props.bestScores]);
+
   const divStyle = gameOn ? { backgroundColor: "lightgrey" } : {};
   const isVisible = isMessage ? "visible" : "hidden";
 
   return (
-    // Add messages to the game and activate next sequence
-    // only after message is off.
-    // Perhaps it will solve
-    // "LAST LIGHT IS NOT VISIBLE!!!!!!!!!" @ lightGamePads
-    // Draw chart of game sequence and send messages accordingly.
     <MainContainer style={divStyle}>
       <Board>
         <h2>{props.player} is Playing</h2>
         <h2>Score: {props.gameScore}</h2>
         <button onClick={() => setGameOn(true)}>Play</button>
       </Board>
-      <PlayZone>
-        <MessageBox style={{ visibility: isVisible }}>
-          {getMessage().text}
-          {!gameOn && props.sequence.length > 0 && (
-            <button onClick={() => handleEndGame()}>Start Over</button>
-          )}
-          {/* {simonTurn && gameOn && <h3>watch</h3>} */}
-        </MessageBox>
-        <Console toggleTurns={toggleTurns} setGameOn={setGameOn} />
-      </PlayZone>
-      <ScoresTable />
+      <MinorContainer>
+        <PlayZone>
+          <MessageBox style={{ visibility: isVisible }}>
+            <h3>{getMessage().text}</h3>
+            {!gameOn && props.sequence.length > 0 && (
+              <button onClick={() => handleEndGame()}>Start Over</button>
+            )}
+          </MessageBox>
+          <Console toggleTurns={toggleTurns} setGameOn={setGameOn} />
+        </PlayZone>
+        <ScoreZone>
+          <MessageBox>
+            <h3>Score Board</h3>
+          </MessageBox>
+          <ScoresTable />
+        </ScoreZone>
+      </MinorContainer>
     </MainContainer>
   );
 };
@@ -212,12 +163,31 @@ const Board = styled.div`
   align-items: center;
 `;
 
-const PlayZone = styled.div`
+const MinorContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   width: 100%;
+
+  // flex-wrap: wrap;
+`;
+
+const PlayZone = styled.div`
+  // width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+const ScoreZone = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 0 50px;
 `;
 
 const MessageBox = styled.div`
@@ -236,8 +206,6 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = {
   setPlayer,
-  setScore,
-  setBests,
   setSequence,
   resetGame,
 };

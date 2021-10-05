@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-type score = {
+type Score = {
   player: string;
   score: number;
 };
@@ -14,6 +14,6 @@ type score = {
 export interface AppState {
   player: string;
   gameScore: number;
-  bestScores: [] | score[];
+  bestScores: [] | Score[];
   sequence: number[];
 }
