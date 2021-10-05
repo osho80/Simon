@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { theme } from "../theme";
 import Console from "../components/Console";
 import ScoresTable from "../components/ScoresTable";
+import Login from "../components/Login";
 import { lightGamePad } from "../utils/lightGamePad";
 import { setPlayer, setSequence, resetGame } from "../store/actions";
 
@@ -13,31 +14,35 @@ const Main = (props: any) => {
   const [gameOn, setGameOn] = useState(false);
   const [playerTurn, setPlayerTurn] = useState(false);
   const [simonTurn, setSimonTurn] = useState(true);
-  const [elements, setElements] = useState<[] | NodeListOf<Element>>([]);
+  const [elements, setElements] = useState<(HTMLElement | null)[]>([]);
   const [isMessage, setMessage] = useState(false);
+  const [isEditPlayer, setEditPlayer] = useState(false);
+
+  const playId = "simon-play";
+  const playButton = document.getElementById(playId);
 
   const removeClassOff = () => {
     elements.forEach((el) => {
-      el.classList.remove("off");
+      if (el) el.classList.remove("off");
     });
   };
 
   const addClassOff = () => {
     elements.forEach((el) => {
-      el.classList.add("off");
+      if (el) el.classList.add("off");
     });
   };
 
   const toggleTurns = () => {
     if (simonTurn) {
       removeClassOff();
+      setMessage(true);
+      setTimeout(() => setMessage(false), 2000);
       setSimonTurn(false);
       setPlayerTurn(true);
     }
     if (playerTurn) {
       addClassOff();
-      setMessage(true);
-      setTimeout(() => setMessage(false), 2000);
       setPlayerTurn(false);
       setSimonTurn(true);
     }
@@ -45,6 +50,8 @@ const Main = (props: any) => {
 
   const getMessage = () => {
     switch (true) {
+      case simonTurn && props.sequence.length === 0:
+        return { msgId: "x", text: "READY?" };
       case gameOn && simonTurn:
         return { msgId: 1, text: "WATCH" };
       case gameOn && playerTurn:
@@ -56,7 +63,20 @@ const Main = (props: any) => {
     }
   };
 
+  const handleGameOrder = (move: number) => {
+    props.setSequence(move);
+    setMessage(true);
+    lightGamePad();
+    setTimeout(() => {
+      setMessage(false);
+      toggleTurns();
+    }, props.sequence.length * theme.simonLightSpan + 2000);
+  };
+
   const handleEndGame = () => {
+    if (playButton) {
+      playButton.classList.remove("disabled");
+    }
     setMessage(false);
     setSimonTurn(true);
     setPlayerTurn(false);
@@ -66,73 +86,78 @@ const Main = (props: any) => {
   const playGame = () => {
     switch (true) {
       case simonTurn && props.sequence.length === 0:
-        console.log("Let's play!!");
-
         const move = getRandomIntInclusive();
-        props.setSequence(move);
-        setMessage(true);
-        lightGamePad();
-        setTimeout(() => {
-          setMessage(false);
-          toggleTurns();
-        }, props.sequence.length * theme.simonLightSpan + 2000);
-        // one function can do all of the above, just send the move number
+        handleGameOrder(move);
         break;
       case simonTurn && props.sequence.length === 1:
-        props.setSequence(props.sequence[0]);
-        setMessage(true);
-        lightGamePad();
-        setTimeout(() => {
-          setMessage(false);
-          toggleTurns();
-        }, props.sequence.length * theme.simonLightSpan + 2000);
+        const secondMove = props.sequence[0];
+        handleGameOrder(secondMove);
         break;
       case simonTurn && props.sequence.length > 1:
         const nextMove = getRandomIntInclusive();
-        props.setSequence(nextMove);
-        setMessage(true);
-        lightGamePad();
-        setTimeout(() => {
-          setMessage(false);
-          toggleTurns();
-        }, props.sequence.length * theme.simonLightSpan + 2000);
+        handleGameOrder(nextMove);
         break;
       default:
-        console.log("props.sequence.length = ", props.sequence.length);
+        console.log("playGame: no matching cases");
     }
   };
 
   useEffect(() => {
-    const els = document.querySelectorAll(".off");
-    setElements(els);
+    const green = document.getElementById("1");
+    const red = document.getElementById("2");
+    const yellow = document.getElementById("3");
+    const blue = document.getElementById("4");
+    const others = [green, red, yellow, blue];
+    if (others) setElements(others);
 
     if (gameOn) {
+      if (playButton) {
+        playButton.classList.add("disabled");
+      }
       playGame();
     } else if (!gameOn && props.sequence.length > 0) {
       setMessage(true);
     }
   }, [gameOn, playerTurn]);
 
-  useEffect(() => {
-    console.log("Best Scores Updated - useEffect:", props.bestScores);
-  }, [props.bestScores]);
-
-  const divStyle = gameOn ? { backgroundColor: "lightgrey" } : {};
   const isVisible = isMessage ? "visible" : "hidden";
+  const currBest = props.bestScores.length > 0 ? props.bestScores[0].score : 0;
 
   return (
-    <MainContainer style={divStyle}>
+    <MainContainer>
       <Board>
+        {/* <PlayButton
+          src="../assets/images/edit-player.png"
+          alt="Change Player Button"
+          title="Click to Change Player"
+          // id={Id}
+          onClick={() => setEditPlayer(true)}
+        /> */}
         <h2>{props.player} is Playing</h2>
         <h2>Score: {props.gameScore}</h2>
-        <button onClick={() => setGameOn(true)}>Play</button>
+        <h2>Best: {currBest}</h2>
+        <PlayButton
+          src="../assets/images/play.png"
+          alt="Play button"
+          title="Click to Play"
+          id={playId}
+          onClick={() => {
+            setMessage(true);
+            setTimeout(() => {
+              setMessage(false);
+              setGameOn(true);
+            }, 2000);
+          }}
+        />
       </Board>
+      {isEditPlayer && <Login setEditPlayer={setEditPlayer} />}
+
       <MinorContainer>
         <PlayZone>
           <MessageBox style={{ visibility: isVisible }}>
             <h3>{getMessage().text}</h3>
             {!gameOn && props.sequence.length > 0 && (
-              <button onClick={() => handleEndGame()}>Start Over</button>
+              <ApproveBtn onClick={() => handleEndGame()}>Try Again</ApproveBtn>
             )}
           </MessageBox>
           <Console toggleTurns={toggleTurns} setGameOn={setGameOn} />
@@ -154,6 +179,7 @@ const MainContainer = styled.div`
   margin: auto;
   display: flex;
   flex-wrap: wrap;
+  position: relative;
 `;
 
 const Board = styled.div`
@@ -163,14 +189,25 @@ const Board = styled.div`
   align-items: center;
 `;
 
+const PlayButton = styled.img`
+  width: 40px;
+  &:hover {
+    cursor: pointer;
+  }
+  &.disabled {
+    pointer-events: none;
+  }
+`;
+
 const MinorContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   width: 100%;
-
-  // flex-wrap: wrap;
+  @media (max-width: 1400px) {
+    flex-direction: column;
+  }
 `;
 
 const PlayZone = styled.div`
@@ -188,11 +225,22 @@ const ScoreZone = styled.div`
   right: 0;
   top: 0;
   margin: 0 50px;
+  @media (max-width: 1400px) {
+    position: inherit;
+  }
 `;
 
 const MessageBox = styled.div`
-  background-color: purple;
   margin: 50px;
+`;
+
+const ApproveBtn = styled.button`
+  padding: 20px;
+  border: 2px solid black;
+  border-radius: 8px;
+  background-color: purple;
+  color: white;
+  font-size: 16px;
 `;
 
 const mapStateToProps = (state: any) => {

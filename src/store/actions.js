@@ -11,7 +11,6 @@ export const setScore = (score) => {
 };
 
 export const setBests = (bests) => {
-  console.log("My setBests", bests);
   return (dispatch) => {
     dispatch(_setBests(bests));
   };
