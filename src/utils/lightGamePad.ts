@@ -12,7 +12,7 @@ export const lightGamePad = () => {
       setTimeout(() => el.classList.add(light), idx * theme.simonLightSpan);
       setTimeout(
         () => el.classList.remove(light),
-        idx * theme.simonLightSpan + 700
+        idx * theme.simonLightSpan + 1000 // was 700
       );
     }
   });

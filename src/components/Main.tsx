@@ -120,7 +120,8 @@ const Main = (props: any) => {
     }
   }, [gameOn, playerTurn]);
 
-  const isVisible = isMessage ? "visible" : "hidden";
+  const isVisible =
+    isMessage || (!gameOn && props.sequence.length > 0) ? "visible" : "hidden";
   const currBest = props.bestScores.length > 0 ? props.bestScores[0].score : 0;
 
   return (
@@ -241,6 +242,9 @@ const ApproveBtn = styled.button`
   background-color: purple;
   color: white;
   font-size: 16px;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const mapStateToProps = (state: any) => {
