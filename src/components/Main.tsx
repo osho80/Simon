@@ -127,20 +127,21 @@ const Main = (props: any) => {
   return (
     <MainContainer>
       <Board>
-        {/* <PlayButton
-          src="../assets/images/edit-player.png"
+        {isEditPlayer && <Login setEditPlayer={setEditPlayer} />}
+        <PlayButton
+          src="../assets/images/edit-player2.png"
           alt="Change Player Button"
-          title="Click to Change Player"
+          title="Change Player"
           // id={Id}
           onClick={() => setEditPlayer(true)}
-        /> */}
+        />
         <h2>{props.player} is Playing</h2>
         <h2>Score: {props.gameScore}</h2>
         <h2>Best: {currBest}</h2>
         <PlayButton
           src="../assets/images/play.png"
           alt="Play button"
-          title="Click to Play"
+          title="Play Game"
           id={playId}
           onClick={() => {
             setMessage(true);
@@ -151,7 +152,6 @@ const Main = (props: any) => {
           }}
         />
       </Board>
-      {isEditPlayer && <Login setEditPlayer={setEditPlayer} />}
 
       <MinorContainer>
         <PlayZone>
