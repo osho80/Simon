@@ -136,7 +136,7 @@ const Main = (props: any) => {
         />
         <h2>Score: {props.gameScore}</h2>
         <h2>Best: {currBest}</h2>
-        <PlayButton
+        {/* <PlayButton
           src="../assets/images/play.png"
           alt="Play button"
           title="Play Game"
@@ -148,7 +148,7 @@ const Main = (props: any) => {
               setGameOn(true);
             }, 2000);
           }}
-        />
+        /> */}
       </Board>
 
       <MinorContainer>
@@ -159,11 +159,15 @@ const Main = (props: any) => {
               <ApproveBtn onClick={() => handleEndGame()}>Try Again</ApproveBtn>
             )}
           </MessageBox>
-          <Console toggleTurns={toggleTurns} setGameOn={setGameOn} />
+          <Console
+            toggleTurns={toggleTurns}
+            setGameOn={setGameOn}
+            setMessage={setMessage}
+            isGameOn={gameOn}
+            disablePads={addClassOff}
+          />
         </PlayZone>
-        {/* <ScoreZone> */}
         <ScoresTable />
-        {/* </ScoreZone> */}
       </MinorContainer>
     </MainContainer>
   );
@@ -213,21 +217,9 @@ const PlayZone = styled.div`
   align-items: center;
 `;
 
-// const ScoreZone = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   position: absolute;
-//   right: 0;
-//   top: 0;
-//   margin: 0 50px;
-//   @media (max-width: 1400px) {
-//     position: inherit;
-//   }
-// `;
-
 const MessageBox = styled.div`
   display: flex;
-  margin: 50px;
+  margin: 10px 0 15px;
 `;
 
 const MsgTxt = styled.h2`

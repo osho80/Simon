@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { theme } from "../theme";
@@ -7,6 +7,52 @@ import { updateBestScores } from "../utils/updateBestScores";
 
 const Console = (props: any) => {
   const [numOfMove, setNumOfMove] = useState<number>(0);
+  const { isGameOn } = props;
+
+  useEffect(() => {
+    if (!isGameOn) props.disablePads();
+  }, [isGameOn]);
+
+  const centralButton = () => {
+    switch (true) {
+      case !isGameOn && props.sequence.length === 0:
+        return {
+          src: "../assets/images/play-blue.png",
+          alt: "Play button",
+          title: "Play Game",
+          callback: () => {
+            props.setMessage(true);
+            setTimeout(() => {
+              props.setMessage(false);
+              props.setGameOn(true);
+            }, 2000);
+          },
+        };
+      case isGameOn:
+        return {
+          src: "../assets/images/Quick_restart.png",
+          alt: "Restart button",
+          title: "Restart Game",
+          callback: () => {
+            props.setGameOn(false);
+            setNumOfMove(0);
+          },
+        };
+      case !isGameOn && props.sequence.length > 0:
+        return {
+          src: "../assets/images/disapointed-emoji.gif",
+          alt: "Disapointed Emoji Gif",
+          title: "Try Again",
+        };
+      default:
+        return {
+          src: "",
+          alt: "",
+          title: "",
+        };
+    }
+  };
+  const { src, alt, title, callback } = centralButton();
 
   const handlePlayerMove = (value: number) => {
     const light = "light";
@@ -51,14 +97,29 @@ const Console = (props: any) => {
         className="off"
         onClick={() => handlePlayerMove(4)}
       ></BottomRight>
-      <ConsoleCenter />
+      <ConsoleCenter>
+        {src && alt && title && (
+          <PlayButton
+            src={src}
+            alt={alt}
+            title={title}
+            onClick={callback}
+          ></PlayButton>
+        )}
+      </ConsoleCenter>
     </GameConsole>
   );
 };
 
+const consoleSizeNormal = theme.consoleCenterSize * 3;
+const consoleSizeSmall = theme.consoleCenterSize * 2;
+const centerSizeNormal = theme.consoleCenterSize;
+const centerSizeSmall = theme.consoleCenterSize * 0.667;
+const borderStyle = `${theme.consoleBorder}px solid black;`;
+
 const GameConsole = styled.div`
-  width: ${theme.consoleCenterSize * 3}px;
-  height: ${theme.consoleCenterSize * 3}px;
+  width: ${consoleSizeNormal}px;
+  height: ${consoleSizeNormal}px;
   outline: ${theme.consoleBorder * 2}px solid black;
   border-radius: 50%;
   margin: 20px;
@@ -67,6 +128,10 @@ const GameConsole = styled.div`
   grid-template-areas:
     "topLeft topRight"
     "bottomLeft bottomRight";
+  @media (max-width: 720px) {
+    width: ${consoleSizeSmall}px;
+    height: ${consoleSizeSmall}px;
+  }
 `;
 
 const gameConsole = `
@@ -82,8 +147,8 @@ const TopLeft = styled.div`
   grid-area: topLeft;
   background-color: green;
   border-radius: 90% 0 0 0;
-  border-right: ${theme.consoleBorder}px solid black;
-  border-bottom: ${theme.consoleBorder}px solid black;
+  border-right: ${borderStyle}
+  border-bottom: ${borderStyle}
   box-shadow: inset 200px 200px 200px 200px rgba(0, 0, 0, 0.3);
   &.light {
     ${theme.greenLight}
@@ -94,8 +159,8 @@ const TopRight = styled.div`
   grid-area: topRight;
   background-color: red;
   border-radius: 0 90% 0 0;
-  border-left: ${theme.consoleBorder}px solid black;
-  border-bottom: ${theme.consoleBorder}px solid black;
+  border-left: ${borderStyle}
+  border-bottom: ${borderStyle}
   box-shadow: inset 200px 200px 200px 200px rgba(0, 0, 0, 0.3);
   &.light {
     ${theme.noShadow}
@@ -106,8 +171,8 @@ const BottomLeft = styled.div`
   grid-area: bottomLeft;
   background-color: yellow;
   border-radius: 0 0 0 90%;
-  border-right: ${theme.consoleBorder}px solid black;
-  border-top: ${theme.consoleBorder}px solid black;
+  border-right: ${borderStyle}
+  border-top: ${borderStyle}
   box-shadow: inset 200px 200px 200px 200px rgba(0, 0, 0, 0.3);
   &.light {
     ${theme.noShadow}
@@ -118,8 +183,8 @@ const BottomRight = styled.div`
   grid-area: bottomRight;
   background-color: blue;
   border-radius: 0 0 90% 0;
-  border-left: ${theme.consoleBorder}px solid black;
-  border-top: ${theme.consoleBorder}px solid black;
+  border-left: ${borderStyle}
+  border-top: ${borderStyle}
   box-shadow: inset 200px 200px 200px 200px rgba(0, 0, 0, 0.3);
   &.light {
     ${theme.noShadow}
@@ -128,13 +193,35 @@ const BottomRight = styled.div`
 `;
 
 const ConsoleCenter = styled.div`
-  width: ${theme.consoleCenterSize}px;
-  height: ${theme.consoleCenterSize}px;
+  width: ${centerSizeNormal}px;
+  height: ${centerSizeNormal}px;
   border-radius: 50%;
   background-color: black;
   position: absolute;
-  top: ${theme.consoleCenterSize}px;
-  right: ${theme.consoleCenterSize}px;
+  top: ${centerSizeNormal}px;
+  right: ${centerSizeNormal}px;
+  @media (max-width: 720px) {
+    width: ${centerSizeSmall}px;
+    height: ${centerSizeSmall}px;
+    top: ${centerSizeSmall}px;
+    right: ${centerSizeSmall}px;
+  }
+`;
+
+const PlayButton = styled.img`
+  width: 140px;
+  margin: 30px 0 0;
+  border-radius: 50%;
+  &:hover {
+    cursor: pointer;
+  }
+  &.disabled {
+    pointer-events: none;
+  }
+  @media (max-width: 720px) {
+    width: 100px;
+    margin-top: 17px;
+  }
 `;
 
 const mapStateToProps = (state: any) => {
