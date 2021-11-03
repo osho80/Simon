@@ -3,7 +3,7 @@ import { AppState } from "../types/types";
 
 const data = getCookieValues();
 const { simonPlayer, simonBests } = data;
-const currPlayer = simonPlayer ? simonPlayer : "player1";
+const currPlayer = simonPlayer ? simonPlayer : "Guest";
 const bestScores = simonBests ? JSON.parse(simonBests) : [];
 
 const initialState: AppState = {

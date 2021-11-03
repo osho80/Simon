@@ -132,10 +132,8 @@ const Main = (props: any) => {
           src="../assets/images/edit-player2.png"
           alt="Change Player Button"
           title="Change Player"
-          // id={Id}
           onClick={() => setEditPlayer(true)}
         />
-        <h2>{props.player} is Playing</h2>
         <h2>Score: {props.gameScore}</h2>
         <h2>Best: {currBest}</h2>
         <PlayButton
@@ -156,19 +154,16 @@ const Main = (props: any) => {
       <MinorContainer>
         <PlayZone>
           <MessageBox style={{ visibility: isVisible }}>
-            <h3>{getMessage().text}</h3>
+            <MsgTxt>{getMessage().text}</MsgTxt>
             {!gameOn && props.sequence.length > 0 && (
               <ApproveBtn onClick={() => handleEndGame()}>Try Again</ApproveBtn>
             )}
           </MessageBox>
           <Console toggleTurns={toggleTurns} setGameOn={setGameOn} />
         </PlayZone>
-        <ScoreZone>
-          <MessageBox>
-            <h3>Score Board</h3>
-          </MessageBox>
-          <ScoresTable />
-        </ScoreZone>
+        {/* <ScoreZone> */}
+        <ScoresTable />
+        {/* </ScoreZone> */}
       </MinorContainer>
     </MainContainer>
   );
@@ -212,31 +207,35 @@ const MinorContainer = styled.div`
 `;
 
 const PlayZone = styled.div`
-  // width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
 
-const ScoreZone = styled.div`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  right: 0;
-  top: 0;
-  margin: 0 50px;
-  @media (max-width: 1400px) {
-    position: inherit;
-  }
-`;
+// const ScoreZone = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   position: absolute;
+//   right: 0;
+//   top: 0;
+//   margin: 0 50px;
+//   @media (max-width: 1400px) {
+//     position: inherit;
+//   }
+// `;
 
 const MessageBox = styled.div`
+  display: flex;
   margin: 50px;
 `;
 
+const MsgTxt = styled.h2`
+  margin-right: 20px;
+`;
+
 const ApproveBtn = styled.button`
-  padding: 20px;
+  padding: 0 20px;
   border: 2px solid black;
   border-radius: 8px;
   background-color: purple;
@@ -249,7 +248,6 @@ const ApproveBtn = styled.button`
 
 const mapStateToProps = (state: any) => {
   return {
-    player: state.appStore.player,
     gameScore: state.appStore.gameScore,
     bestScores: state.appStore.bestScores,
     sequence: state.appStore.sequence,

@@ -12,6 +12,7 @@ const ScoresTable = (props: any) => {
 
   return (
     <TableContainer>
+      <h3>Score Board</h3>
       <BestScores>
         <Row>
           <Head>#</Head>
@@ -34,7 +35,7 @@ const ScoresTable = (props: any) => {
 
 const TableContainer = styled.div`
   min-width: 300px;
-  margin: 0 auto;
+  margin: 20px auto 0;
 `;
 const BestScores = styled.table`
   width: 100%;
