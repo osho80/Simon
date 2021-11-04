@@ -6,7 +6,7 @@ import Console from "../components/Console";
 import ScoresTable from "../components/ScoresTable";
 import Login from "../components/Login";
 import { lightGamePad } from "../utils/lightGamePad";
-import { setPlayer, setSequence, resetGame } from "../store/actions";
+import { setSequence, setSound, resetGame } from "../store/actions";
 
 import { getRandomIntInclusive } from "../utils/getRandomInt";
 
@@ -17,9 +17,6 @@ const Main = (props: any) => {
   const [elements, setElements] = useState<(HTMLElement | null)[]>([]);
   const [isMessage, setMessage] = useState(false);
   const [isEditPlayer, setEditPlayer] = useState(false);
-
-  const playId = "simon-play";
-  const playButton = document.getElementById(playId);
 
   const removeClassOff = () => {
     elements.forEach((el) => {
@@ -37,7 +34,7 @@ const Main = (props: any) => {
     if (simonTurn) {
       removeClassOff();
       setMessage(true);
-      setTimeout(() => setMessage(false), 2000);
+      setTimeout(() => setMessage(false), 3000);
       setSimonTurn(false);
       setPlayerTurn(true);
     }
@@ -74,9 +71,6 @@ const Main = (props: any) => {
   };
 
   const handleEndGame = () => {
-    if (playButton) {
-      playButton.classList.remove("disabled");
-    }
     setMessage(false);
     setSimonTurn(true);
     setPlayerTurn(false);
@@ -98,7 +92,7 @@ const Main = (props: any) => {
         handleGameOrder(nextMove);
         break;
       default:
-        console.log("playGame: no matching cases");
+        return;
     }
   };
 
@@ -107,13 +101,10 @@ const Main = (props: any) => {
     const red = document.getElementById("2");
     const yellow = document.getElementById("3");
     const blue = document.getElementById("4");
-    const others = [green, red, yellow, blue];
-    if (others) setElements(others);
+    const pads = [green, red, yellow, blue];
+    if (pads) setElements(pads);
 
     if (gameOn) {
-      if (playButton) {
-        playButton.classList.add("disabled");
-      }
       playGame();
     } else if (!gameOn && props.sequence.length > 0) {
       setMessage(true);
@@ -123,12 +114,14 @@ const Main = (props: any) => {
   const isVisible =
     isMessage || (!gameOn && props.sequence.length > 0) ? "visible" : "hidden";
   const currBest = props.bestScores.length > 0 ? props.bestScores[0].score : 0;
-
+  const onOff = props.isSound ? "on" : "off";
+  const speakerPngUrl = `../assets/images/speaker-${onOff}.png`;
   return (
     <MainContainer>
       <Board>
         {isEditPlayer && <Login setEditPlayer={setEditPlayer} />}
         <PlayButton
+          width="40px"
           src="../assets/images/edit-player2.png"
           alt="Change Player Button"
           title="Change Player"
@@ -136,19 +129,15 @@ const Main = (props: any) => {
         />
         <h2>Score: {props.gameScore}</h2>
         <h2>Best: {currBest}</h2>
-        {/* <PlayButton
-          src="../assets/images/play.png"
-          alt="Play button"
-          title="Play Game"
-          id={playId}
+        <PlayButton
+          width="50px"
+          src={speakerPngUrl}
+          alt="Sound control"
+          title="Toggle Sound"
           onClick={() => {
-            setMessage(true);
-            setTimeout(() => {
-              setMessage(false);
-              setGameOn(true);
-            }, 2000);
+            props.setSound(!props.isSound);
           }}
-        /> */}
+        />
       </Board>
 
       <MinorContainer>
@@ -190,12 +179,8 @@ const Board = styled.div`
 `;
 
 const PlayButton = styled.img`
-  width: 40px;
   &:hover {
     cursor: pointer;
-  }
-  &.disabled {
-    pointer-events: none;
   }
 `;
 
@@ -243,12 +228,13 @@ const mapStateToProps = (state: any) => {
     gameScore: state.appStore.gameScore,
     bestScores: state.appStore.bestScores,
     sequence: state.appStore.sequence,
+    isSound: state.appStore.isSound,
   };
 };
 
 const mapDispatchToProps = {
-  setPlayer,
   setSequence,
+  setSound,
   resetGame,
 };
 

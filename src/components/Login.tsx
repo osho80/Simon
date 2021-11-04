@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { setPlayer } from "../store/actions";
+import { setCookie } from "../services/cookieService";
 
 const Login = (props: any) => {
   const [name, setName] = useState("");
@@ -14,6 +15,7 @@ const Login = (props: any) => {
       return;
     } else {
       props.setPlayer(name);
+      setCookie("simonPlayer", name, 60);
       props.setEditPlayer(false);
     }
   };

@@ -16,4 +16,5 @@ export interface AppState {
   gameScore: number;
   bestScores: [] | Score[];
   sequence: number[];
+  isSound: boolean;
 }

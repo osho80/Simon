@@ -21,6 +21,13 @@ export const setSequence = (move) => {
     dispatch(_setSequence(move));
   };
 };
+
+export const setSound = (isSound) => {
+  return (dispatch) => {
+    dispatch(_setSound(isSound));
+  };
+};
+
 export const resetGame = () => {
   return (dispatch) => {
     dispatch(_resetGame());
@@ -40,6 +47,10 @@ const _setBests = (bests) => {
 
 const _setSequence = (move) => {
   return { type: "SET_SEQUENCE", move };
+};
+
+const _setSound = (isSound) => {
+  return { type: "SET_SOUND", isSound };
 };
 
 const _resetGame = () => {

@@ -11,6 +11,7 @@ const initialState: AppState = {
   gameScore: 0,
   bestScores: bestScores,
   sequence: [],
+  isSound: true,
 };
 
 const appReducer = (state = initialState, action: any) => {
@@ -23,6 +24,8 @@ const appReducer = (state = initialState, action: any) => {
       return { ...state, bestScores: action.bests };
     case "SET_SEQUENCE":
       return { ...state, sequence: [...state.sequence, action.move] };
+    case "SET_SOUND":
+      return { ...state, isSound: action.isSound };
     case "RESET_GAME":
       return initialState;
     default:

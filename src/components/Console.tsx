@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { theme } from "../theme";
 import { setScore } from "../store/actions";
 import { updateBestScores } from "../utils/updateBestScores";
+import { regularSounds, wrong } from "../services/audioService";
 
 const Console = (props: any) => {
   const [numOfMove, setNumOfMove] = useState<number>(0);
@@ -59,6 +60,7 @@ const Console = (props: any) => {
     const el = document.getElementById(`${value}`);
     if (el) {
       el.classList.add(light);
+      if (props.isSound) regularSounds[value - 1].play();
       setTimeout(() => el.classList.remove(light), 200);
     }
     if (value === props.sequence[numOfMove]) {
@@ -70,11 +72,13 @@ const Console = (props: any) => {
         setNumOfMove(numOfMove + 1);
       }
     } else {
+      if (props.isSound) wrong.play();
       updateBestScores();
       props.setGameOn(false);
       setNumOfMove(0);
     }
   };
+
   return (
     <GameConsole>
       <TopLeft
@@ -227,6 +231,7 @@ const PlayButton = styled.img`
 const mapStateToProps = (state: any) => {
   return {
     sequence: state.appStore.sequence,
+    isSound: state.appStore.isSound,
   };
 };
 
