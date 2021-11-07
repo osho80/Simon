@@ -62,6 +62,9 @@ const LoginComponent = styled.div`
   border: 4px solid yellow;
   border-radius: 8px;
   background-color: blue;
+  @media (max-width: 500px) {
+    left: 10px;
+  }
 `;
 
 const CloseBtn = styled.button`
@@ -86,8 +89,8 @@ const Text = styled.h3`
 
 const LoginForm = styled.div`
   margin-bottom: 50px;
-  // have less when snackbar is on
 `;
+
 const NameInput = styled.input`
   padding: 10px;
 `;

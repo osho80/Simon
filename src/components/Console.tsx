@@ -117,8 +117,10 @@ const Console = (props: any) => {
 
 const consoleSizeNormal = theme.consoleCenterSize * 3;
 const consoleSizeSmall = theme.consoleCenterSize * 2;
+const consoleSizeXS = theme.consoleCenterSize * 1.5;
 const centerSizeNormal = theme.consoleCenterSize;
 const centerSizeSmall = theme.consoleCenterSize * 0.667;
+const centerSizeXS = theme.consoleCenterSize * 0.5;
 const borderStyle = `${theme.consoleBorder}px solid black;`;
 
 const GameConsole = styled.div`
@@ -135,6 +137,10 @@ const GameConsole = styled.div`
   @media (max-width: 720px) {
     width: ${consoleSizeSmall}px;
     height: ${consoleSizeSmall}px;
+  }
+  @media (max-width: 600px) {
+    width: ${consoleSizeXS}px;
+    height: ${consoleSizeXS}px;
   }
 `;
 
@@ -210,6 +216,12 @@ const ConsoleCenter = styled.div`
     top: ${centerSizeSmall}px;
     right: ${centerSizeSmall}px;
   }
+  @media (max-width: 600px) {
+    width: ${centerSizeXS}px;
+    height: ${centerSizeXS}px;
+    top: ${centerSizeXS}px;
+    right: ${centerSizeXS}px;
+  }
 `;
 
 const PlayButton = styled.img`
@@ -225,6 +237,10 @@ const PlayButton = styled.img`
   @media (max-width: 720px) {
     width: 100px;
     margin-top: 17px;
+  }
+  @media (max-width: 600px) {
+    width: 80px;
+    margin-top: 10px;
   }
 `;
 
