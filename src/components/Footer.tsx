@@ -3,56 +3,64 @@ import styled from "styled-components";
 
 const Footer = () => {
   return (
-    <FooterContainer>
-      <HR />
-      <FooterMain>
-        <CB>Created by Oshri Hayke</CB>
-        <Links>
-          <a
-            href="https://github.com/osho80"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <LinkImg
-              width="40px"
-              src="../assets/images/github-logo.png"
-              alt="Github Logo"
-            />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/oshri-hayke-120201116/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <LinkImg
-              width="40px"
-              src="../assets/images/linkedin-logo.png"
-              alt="LinkedIn Logo"
-            />
-          </a>
-        </Links>
-      </FooterMain>
-      <Technologies>
-        <Tech>TECHNOLOGIES:</Tech>
-        <JS>JavaScript</JS>
-        <TS>Typescript</TS>
-        <RE>React</RE>
-        <RD>Redux</RD>
-        <SC>Styled Components</SC>
-      </Technologies>
-    </FooterContainer>
+    <>
+      {/* <HR /> */}
+      <FooterContainer>
+        <FooterMain>
+          <CB>Created by Oshri Hayke</CB>
+          <Links>
+            <a
+              href="https://github.com/osho80"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <LinkImg
+                width="40px"
+                src="../assets/images/github-logo.png"
+                alt="Github Logo"
+              />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/oshri-hayke-120201116/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <LinkImg
+                width="40px"
+                src="../assets/images/linkedin-logo.png"
+                alt="LinkedIn Logo"
+              />
+            </a>
+          </Links>
+        </FooterMain>
+        <Technologies>
+          <Tech>Technologies:</Tech>
+          <JS>JavaScript</JS>
+          <TS>Typescript</TS>
+          <RE>React</RE>
+          <RD>Redux</RD>
+          <SC>Styled Components</SC>
+        </Technologies>
+      </FooterContainer>
+    </>
   );
 };
 
 const FooterContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 30px;
-  // background-color: #010101;
+  max-width: 1440px;
+  margin: 30px auto 0;
+  background-color: #4e5556;
+  padding: 10px;
 `;
 
 const HR = styled.hr`
   width: 100%;
+  display: none;
+  @media (max-width: 1440px) {
+    display: block;
+  }
 `;
 
 const FooterMain = styled.div`
@@ -80,31 +88,30 @@ const Technologies = styled.div`
   max-width: 1440px;
 `;
 
-const Tech = styled.p`
-  color: black;
-  margin: 5px 5px 0 0;
+const TechItem = styled.p`
+  margin: 5px 5px 0;
 `;
 
-const JS = styled.p`
+const Tech = styled(TechItem)`
+  color: white;
+`;
+
+const JS = styled(TechItem)`
   color: #fcdd0b;
-  margin: 5px 5px 0;
 `;
 
-const TS = styled.p`
+const TS = styled(TechItem)`
   color: #548fcf;
-  margin: 5px 5px 0;
 `;
-const RE = styled.p`
+const RE = styled(TechItem)`
   color: #7be0fb;
-  margin: 5px 5px 0;
 `;
-const RD = styled.p`
+
+const RD = styled(TechItem)`
   color: #906cc9;
-  margin: 5px 5px 0;
 `;
-const SC = styled.p`
+const SC = styled(TechItem)`
   color: #d67fc7;
-  margin: 5px 0 0 5px;
 `;
 
 export default Footer;
